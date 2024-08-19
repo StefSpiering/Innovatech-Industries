@@ -1,0 +1,78 @@
+/* Estilos para el Header */
+header {
+    background-color: white; /* Fondo blanco para el header */
+    color: #1a202c; /* Texto oscuro para el header */
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra ligera para destacar el header */
+  }
+  
+  header h1 {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  header p {
+    font-size: 16px;
+    margin-top: 10px;
+  }
+  
+  /* Estilos para el menú del Header */
+  header nav {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  header nav a {
+    margin: 0 10px;
+    color: #1a202c; /* Color de texto oscuro para los enlaces */
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  header nav a:hover {
+    color: #4a5568; /* Cambio de color al pasar el ratón */
+  }
+  
+  /* Estilos para el Sidebar */
+
+
+  /* Estilos para el Contenido Principal */
+  .main-content {
+    background-color: #2d3748; /* Fondo oscuro para el contenido principal */
+    color: white; /* Texto blanco para el contenido principal */
+    flex: 1; /* Ocupar todo el espacio restante */
+    padding: 20px;
+  }
+  
+  .main-content h1 {
+    font-size: 2xl;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .main-content p {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  
+  /* Estilos para el Footer */
+  footer {
+    background-color: #1a202c; /* Fondo oscuro para el footer */
+    color: white;
+    padding: 20px;
+    text-align: center;
+    margin-top: 50px;
+  }
+  
+  footer a {
+    color: #a0aec0;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  footer a:hover {
+    color: #e2e8f0;
+  }
+  
