@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Table, Thead, Tbody, Tr, Th, Td, Box, Spinner, Text, useToast } from '@chakra-ui/react';
+import { Table, Thead, Tbody, Tr, Th, Td, Box, Spinner, Text, Button, useToast } from '@chakra-ui/react';
 import supabase from '../lib/supabaseClient';
 
-const SuppliersTable = () => {
+const SuppliersTable = ({ onEditSupplier }) => { // Recibe la función de edición del padre
   const [suppliers, setSuppliers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -50,6 +50,7 @@ const SuppliersTable = () => {
             <Th>Phone Number</Th>
             <Th>Email</Th>
             <Th>Created At</Th>
+            <Th>Actions</Th> {/* Nueva columna para acciones */}
           </Tr>
         </Thead>
         <Tbody>
@@ -62,6 +63,11 @@ const SuppliersTable = () => {
               <Td>{supplier.phone_number}</Td>
               <Td>{supplier.email}</Td>
               <Td>{new Date(supplier.created_at).toLocaleString()}</Td>
+              <Td>
+                <Button colorScheme="blue" onClick={() => onEditSupplier(supplier)}>
+                  Editar
+                </Button>
+              </Td> {/* Botón de edición */}
             </Tr>
           ))}
         </Tbody>

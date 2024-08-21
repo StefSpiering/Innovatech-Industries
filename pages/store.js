@@ -12,7 +12,7 @@ import {
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
-import Header from '../components/Header'; // Asegúrate de que la ruta sea correcta
+import HeaderStore from '../components/HeaderStore'; // Asegúrate de que la ruta sea correcta
 import Carousel from '../components/Carousel';
 import HeroStore from '../components/HeroStore';
 import ProdList from '../components/ProdList';
@@ -85,7 +85,7 @@ export default function Store() {
   return (
     <Flex flex="1" direction="column" pl={6}>
     <Box>
-      <Header /> {/* Asumiendo que este componente muestra el encabezado */}
+      <HeaderStore /> {/* Asumiendo que este componente muestra el encabezado */}
       <HeroStore />
       <ProdList />
 

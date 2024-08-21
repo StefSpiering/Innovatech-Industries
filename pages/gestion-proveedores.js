@@ -1,21 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Heading, Flex } from '@chakra-ui/react';
-import AddSupplierForm from '../components/AddSupplierForm'; // Asegúrate de que la ruta sea correcta
+import AddSupplierForm from '../components/AddSupplierForm';
+
 import SuppliersTable from '../components/SuppliersTable';
-import Sidebar from '../components/Sidebar'; // Asegurándote de que tienes un componente Sidebar para el menú
+import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 
 const ManageSuppliers = () => {
+  const [selectedSupplier, setSelectedSupplier] = useState(null);
+
+  // Manejar la selección de un proveedor para edición
+  const handleEditSupplier = (supplier) => {
+    setSelectedSupplier(supplier);
+  };
+
+  // Limpiar la selección cuando se complete la edición o el agregado
+  const handleFormSubmit = () => {
+    setSelectedSupplier(null);
+  };
+
   return (
     <Box p={6}>
       <Header />
       <Flex>
-        {/* Sidebar */}
         <Box width="250px" bg="white" p={5} boxShadow="md">
           <Sidebar />
         </Box>
 
-        {/* Main content */}
         <Box flex="1" p={5}>
           <Heading as="h1" mb={6} color="green">
             Consultas y Reportes
@@ -26,12 +37,18 @@ const ManageSuppliers = () => {
           </Heading>
 
           <Box mb={6}>
-            <SuppliersTable />
+            {/* Pasar handleEditSupplier como prop */}
+            <SuppliersTable onEditSupplier={handleEditSupplier} />
           </Box>
 
           <Box>
-            <AddSupplierForm />
+            {/* Pasar el proveedor seleccionado como prop */}
+            <AddSupplierForm
+              selectedSupplier={selectedSupplier}
+              onFormSubmit={handleFormSubmit}
+            />
           </Box>
+        
         </Box>
       </Flex>
     </Box>

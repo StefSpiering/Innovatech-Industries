@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Table, Thead, Tbody, Tr, Th, Td, Box, Spinner, Text, useToast, TableContainer, TableCaption } from '@chakra-ui/react';
-import supabase from '../lib/supabaseClient'; // Asegúrate de que esta ruta es correcta
+import { Table, Thead, Tbody, Tr, Th, Td, Box, Spinner, Text, Button, useToast } from '@chakra-ui/react';
+import supabase from '../lib/supabaseClient';
 
-const ProductsTable = () => {
+const ProductsTable = ({ onEditProduct }) => { // Recibe la función de edición del padre
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -11,16 +11,9 @@ const ProductsTable = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        // Ajusta la consulta según la estructura de tu base de datos
         const { data, error } = await supabase
           .from('products')
-          .select(`
-            id,
-            name,
-            description,
-            price,
-            supplier:suppliers (name)  // Asegúrate de que esta relación es válida en tu esquema
-          `);
+          .select('id, name, description, price, suppliers(name)'); // Ajusta según la estructura
 
         if (error) throw error;
 
@@ -47,34 +40,36 @@ const ProductsTable = () => {
 
   return (
     <Box p={4}>
-      <TableContainer>
-        <Table variant='striped' colorScheme='teal'>
-          <TableCaption>Products List</TableCaption>
-          <Thead>
-            <Tr>
-              <Th>ID</Th>
-              <Th>Name</Th>
-              <Th>Description</Th>
-              <Th isNumeric>Price</Th>
-              <Th>Supplier</Th>
+      <Table variant="simple">
+        <Thead>
+          <Tr>
+            <Th>ID</Th>
+            <Th>Name</Th>
+            <Th>Description</Th>
+            <Th>Price</Th>
+            <Th>Supplier</Th>
+            <Th>Actions</Th> {/* Nueva columna para acciones */}
+          </Tr>
+        </Thead>
+        <Tbody>
+          {products.map((product) => (
+            <Tr key={product.id}>
+              <Td>{product.id}</Td>
+              <Td>{product.name}</Td>
+              <Td>{product.description}</Td>
+              <Td>${product.price}</Td>
+              <Td>{product.suppliers?.name}</Td> {/* Ajusta según tu estructura */}
+              <Td>
+                <Button colorScheme="blue" onClick={() => onEditProduct(product)}>
+                  Editar
+                </Button>
+              </Td> {/* Botón de edición */}
             </Tr>
-          </Thead>
-          <Tbody>
-            {products.map((product) => (
-              <Tr key={product.id}>
-                <Td>{product.id}</Td>
-                <Td>{product.name}</Td>
-                <Td>{product.description}</Td>
-                <Td isNumeric>{product.price}</Td>
-                <Td>{product.supplier ? product.supplier.name : 'No supplier'}</Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      </TableContainer>
+          ))}
+        </Tbody>
+      </Table>
     </Box>
   );
 };
 
 export default ProductsTable;
-

@@ -1,111 +1,100 @@
-import { useState } from 'react';
-import { Button, Input, FormControl, FormLabel, Box, useToast } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+import { Box, Button, Input } from '@chakra-ui/react';
 import supabase from '../lib/supabaseClient';
 
-const AddSupplierForm = () => {
-  const [name, setName] = useState('');
-  const [contactInfo, setContactInfo] = useState('');
-  const [address, setAddress] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [email, setEmail] = useState('');
-  const toast = useToast();
+const AddSupplierForm = ({ selectedSupplier, onFormSubmit }) => {
+  const [formData, setFormData] = useState({
+    name: '',
+    contact_info: '',
+    address: '',
+    phone_number: '',
+    email: '',
+  });
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    const { data: supplier, error: insertError } = await supabase
-      .from('suppliers')
-      .insert([{ 
-        name, 
-        contact_info: contactInfo, 
-        address, 
-        phone_number: phoneNumber, 
-        email 
-      }]);
-
-    if (insertError) {
-      toast({
-        title: 'Insert error.',
-        description: insertError.message,
-        status: 'error',
-        duration: 9000,
-        isClosable: true,
+  useEffect(() => {
+    if (selectedSupplier) {
+      setFormData({
+        name: selectedSupplier.name || '',
+        contact_info: selectedSupplier.contact_info || '',
+        address: selectedSupplier.address || '',
+        phone_number: selectedSupplier.phone_number || '',
+        email: selectedSupplier.email || '',
       });
-      return;
+    } else {
+      setFormData({
+        name: '',
+        contact_info: '',
+        address: '',
+        phone_number: '',
+        email: '',
+      });
+    }
+  }, [selectedSupplier]);
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (selectedSupplier) {
+      // Actualizar el proveedor existente
+      await supabase
+        .from('suppliers')
+        .update(formData)
+        .eq('id', selectedSupplier.id);
+    } else {
+      // Agregar un nuevo proveedor
+      await supabase.from('suppliers').insert([formData]);
     }
 
-    toast({
-      title: 'Supplier added.',
-      description: 'The supplier has been added successfully!',
-      status: 'success',
-      duration: 9000,
-      isClosable: true,
-    });
-
-    // Reset form
-    setName('');
-    setContactInfo('');
-    setAddress('');
-    setPhoneNumber('');
-    setEmail('');
+    onFormSubmit();
   };
 
   return (
-    <Box>
-      <form onSubmit={handleSubmit}>
-        <FormControl isRequired>
-          <FormLabel>Name</FormLabel>
-          <Input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </FormControl>
-
-        <FormControl mt={4}>
-          <FormLabel>Contact Info</FormLabel>
-          <Input
-            type="text"
-            value={contactInfo}
-            onChange={(e) => setContactInfo(e.target.value)}
-          />
-        </FormControl>
-
-        <FormControl mt={4}>
-          <FormLabel>Address</FormLabel>
-          <Input
-            type="text"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-          />
-        </FormControl>
-
-        <FormControl mt={4}>
-          <FormLabel>Phone Number</FormLabel>
-          <Input
-            type="text"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
-          />
-        </FormControl>
-
-        <FormControl mt={4}>
-          <FormLabel>Email</FormLabel>
-          <Input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </FormControl>
-
-        <Button
-          type="submit"
-          colorScheme="teal"
-          mt={4}
-        >
-          Add Supplier
-        </Button>
-      </form>
+    <Box as="form" onSubmit={handleSubmit}>
+      <Input
+        name="name"
+        placeholder="Nombre"
+        value={formData.name}
+        onChange={handleChange}
+        mb={3}
+      />
+      <Input
+        name="contact_info"
+        placeholder="Información de Contacto"
+        value={formData.contact_info}
+        onChange={handleChange}
+        mb={3}
+      />
+      <Input
+        name="address"
+        placeholder="Dirección"
+        value={formData.address}
+        onChange={handleChange}
+        mb={3}
+      />
+      <Input
+        name="phone_number"
+        placeholder="Teléfono"
+        value={formData.phone_number}
+        onChange={handleChange}
+        mb={3}
+      />
+      <Input
+        name="email"
+        placeholder="Correo Electrónico"
+        value={formData.email}
+        onChange={handleChange}
+        mb={3}
+      />
+      <Button type="submit" colorScheme="green">
+        {selectedSupplier ? 'Actualizar Proveedor' : 'Agregar Proveedor'}
+      </Button>
     </Box>
   );
 };

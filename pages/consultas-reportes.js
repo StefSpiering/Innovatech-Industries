@@ -1,7 +1,7 @@
-// pages/consultas-reportes.js
-import { Box, Heading, Text, Table, Thead, Tbody, Tr, Th, Td, Button, Flex } from '@chakra-ui/react';
+import { Box, Heading, Text, Button, Flex } from '@chakra-ui/react';
 import Sidebar from '../components/Sidebar'; // Asumiendo que tienes un componente Sidebar para el menú
 import Header from '../components/Header';
+import ConsultasTable from '../components/ConsultasTable'; // Importa tu componente de la tabla de consultas
 
 const ConsultasReportes = () => {
   return (
@@ -27,47 +27,8 @@ const ConsultasReportes = () => {
             Generar Reporte
           </Button>
 
-          <Table variant="striped" colorScheme="teal">
-            <Thead>
-              <Tr>
-                <Th>ID</Th>
-                <Th>Nombre</Th>
-                <Th>Descripción</Th>
-                <Th>Fecha</Th>
-                <Th>Acciones</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              <Tr>
-                <Td>1</Td>
-                <Td>Reporte de Ventas</Td>
-                <Td>Reporte mensual de ventas</Td>
-                <Td>2024-08-01</Td>
-                <Td>
-                  <Button colorScheme="blue" size="sm" mr={2}>
-                    Ver
-                  </Button>
-                  <Button colorScheme="red" size="sm">
-                    Eliminar
-                  </Button>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td>2</Td>
-                <Td>Reporte de Inventario</Td>
-                <Td>Reporte de inventario actualizado</Td>
-                <Td>2024-08-05</Td>
-                <Td>
-                  <Button colorScheme="blue" size="sm" mr={2}>
-                    Ver
-                  </Button>
-                  <Button colorScheme="red" size="sm">
-                    Eliminar
-                  </Button>
-                </Td>
-              </Tr>
-            </Tbody>
-          </Table>
+          {/* Aquí se renderiza la tabla de consultas */}
+          <ConsultasTable />
         </Box>
       </Flex>
     </Box>

@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
-import { Button, Input, FormControl, FormLabel, Box, useToast, Select } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+import { Box, Button, Input, FormControl, FormLabel, Select, useToast } from '@chakra-ui/react';
 import supabase from '../lib/supabaseClient';
 
-const AddProductForm = () => {
+const AddProductForm = ({ selectedProduct, onFormSubmit }) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
@@ -33,42 +33,74 @@ const AddProductForm = () => {
     fetchSuppliers();
   }, [toast]);
 
+  useEffect(() => {
+    if (selectedProduct) {
+      setName(selectedProduct.name);
+      setDescription(selectedProduct.description);
+      setPrice(selectedProduct.price);
+      setSupplierId(selectedProduct.supplier_id);
+    } else {
+      // Limpiar el formulario si no hay producto seleccionado
+      setName('');
+      setDescription('');
+      setPrice('');
+      setSupplierId('');
+    }
+  }, [selectedProduct]);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const { data: product, error: insertError } = await supabase
-      .from('products')
-      .insert([{ 
-        name, 
-        description, 
-        price, 
-        supplier_id: supplierId 
-      }]);
+    try {
+      if (selectedProduct) {
+        // Editar producto existente
+        const { error: updateError } = await supabase
+          .from('products')
+          .update({
+            name,
+            description,
+            price,
+            supplier_id: supplierId
+          })
+          .eq('id', selectedProduct.id);
 
-    if (insertError) {
+        if (updateError) throw updateError;
+
+        toast({
+          title: 'Product updated.',
+          description: 'The product has been updated successfully!',
+          status: 'success',
+          duration: 9000,
+          isClosable: true,
+        });
+      } else {
+        // Agregar un nuevo producto
+        const { error: insertError } = await supabase
+          .from('products')
+          .insert([{ name, description, price, supplier_id: supplierId }]);
+
+        if (insertError) throw insertError;
+
+        toast({
+          title: 'Product added.',
+          description: 'The product has been added successfully!',
+          status: 'success',
+          duration: 9000,
+          isClosable: true,
+        });
+      }
+
+      // Resetear el formulario y notificar al componente padre
+      onFormSubmit();
+    } catch (error) {
       toast({
-        title: 'Insert error.',
-        description: insertError.message,
+        title: 'Error.',
+        description: error.message,
         status: 'error',
         duration: 9000,
         isClosable: true,
       });
-      return;
     }
-
-    toast({
-      title: 'Product added.',
-      description: 'The product has been added successfully!',
-      status: 'success',
-      duration: 9000,
-      isClosable: true,
-    });
-
-    // Reset form
-    setName('');
-    setDescription('');
-    setPrice('');
-    setSupplierId('');
   };
 
   return (
@@ -122,11 +154,11 @@ const AddProductForm = () => {
           colorScheme="teal"
           mt={4}
         >
-          Add Product
+          {selectedProduct ? 'Update Product' : 'Add Product'}
         </Button>
       </form>
     </Box>
   );
 };
 
-export default AddProductForm
+export default AddProductForm;
