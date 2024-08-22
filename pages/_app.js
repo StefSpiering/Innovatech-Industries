@@ -1,4 +1,5 @@
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
+import { CartProvider } from '../context/CartContext';
 
 import '../public/styles.css'
 const theme = extendTheme({
@@ -8,7 +9,9 @@ const theme = extendTheme({
 function MyApp({ Component, pageProps }) {
   return (
     <ChakraProvider theme={theme}>
+      <CartProvider>
       <Component {...pageProps} />
+      </CartProvider>
     </ChakraProvider>
   );
 }

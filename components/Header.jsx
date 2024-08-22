@@ -13,18 +13,58 @@ import {
   useColorModeValue,
   useBreakpointValue,
   useDisclosure,
-  Image, // Importa el componente Image
-} from '@chakra-ui/react'
+  Image,
+} from '@chakra-ui/react';
 import {
   HamburgerIcon,
   CloseIcon,
   ChevronDownIcon,
   ChevronRightIcon,
-} from '@chakra-ui/icons'
-import NextLink from 'next/link'
+} from '@chakra-ui/icons';
+import { FaShoppingCart } from 'react-icons/fa'; // Importar el ícono del carrito de compras
+import NextLink from 'next/link';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import supabase from '../lib/supabaseClient';
 
 export default function WithSubnavigation() {
-  const { isOpen, onToggle } = useDisclosure()
+  const { isOpen, onToggle } = useDisclosure();
+  const [user, setUser] = useState(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (session) {
+        setUser(session.user);
+      }
+
+      const { data: authListener } = supabase.auth.onAuthStateChange(
+        (event, session) => {
+          if (session && session.user) {
+            setUser(session.user);
+          } else {
+            setUser(null);
+          }
+        }
+      );
+
+      return () => {
+        authListener?.unsubscribe();
+      };
+    };
+
+    fetchUser();
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    router.push('/login');
+  };
 
   return (
     <Box>
@@ -51,15 +91,16 @@ export default function WithSubnavigation() {
         </Flex>
         <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }} align={'center'}>
           <Image
-            src="/images/Logo.png" // Cambia esto a la ruta de tu imagen de logo
+            src="/images/Logo.png" 
             alt="Logo"
-            boxSize="50px" // Ajusta el tamaño según tus necesidades
-            mr={4} // Ajusta el margen si es necesario
+            boxSize="50px" 
+            mr={4} 
           />
           <Text
             textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
             fontFamily={'heading'}
             color={useColorModeValue('gray.800', 'white')}>
+            Innovatech Industries
           </Text>
 
           <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
@@ -72,24 +113,32 @@ export default function WithSubnavigation() {
           justify={'flex-end'}
           direction={'row'}
           spacing={6}>
-          <NextLink href="/login" passHref>
-            <Button colorScheme="green">Log In</Button>
-          </NextLink>
-          <Button
-            as={'a'}
-            display={{ base: 'none', md: 'inline-flex' }}
-            fontSize={'sm'}
-            fontWeight={600}
-            color={'white'}
-            bg={'green'}
-            href={'#'}
-            _hover={{
-              bg: 'green',
-            }}>
-            <NextLink href="/register" passHref>
-              <Button colorScheme="green">Register</Button>
-            </NextLink>
-          </Button>
+          {user ? (
+            <Flex align="center">
+              <Text mr={4}>Hola, {user.email}</Text>
+              <NextLink href="/carrito-compras" passHref>
+                <IconButton
+                  icon={<FaShoppingCart />}
+                  colorScheme="blue"
+                  variant="outline"
+                  aria-label="Carrito de Compras"
+                  mr={4}
+                />
+              </NextLink>
+              <Button colorScheme="red" onClick={handleLogout}>
+                Cerrar sesión
+              </Button>
+            </Flex>
+          ) : (
+            <>
+              <NextLink href="/login" passHref>
+                <Button colorScheme="green">Log In</Button>
+              </NextLink>
+              <NextLink href="/register" passHref>
+                <Button colorScheme="green">Register</Button>
+              </NextLink>
+            </>
+          )}
         </Stack>
       </Flex>
 
@@ -97,13 +146,13 @@ export default function WithSubnavigation() {
         <MobileNav />
       </Collapse>
     </Box>
-  )
+  );
 }
 
 const DesktopNav = () => {
-  const linkColor = useColorModeValue('gray.600', 'gray.200')
-  const linkHoverColor = useColorModeValue('gray.800', 'white')
-  const popoverContentBgColor = useColorModeValue('white', 'gray.800')
+  const linkColor = useColorModeValue('gray.600', 'gray.200');
+  const linkHoverColor = useColorModeValue('gray.800', 'white');
+  const popoverContentBgColor = useColorModeValue('white', 'gray.800');
 
   return (
     <Stack direction={'row'} spacing={4}>
@@ -145,8 +194,8 @@ const DesktopNav = () => {
         </Box>
       ))}
     </Stack>
-  )
-}
+  );
+};
 
 const DesktopSubNav = ({ label, href, subLabel }) => {
   return (
@@ -180,8 +229,8 @@ const DesktopSubNav = ({ label, href, subLabel }) => {
         </Flex>
       </Stack>
     </Box>
-  )
-}
+  );
+};
 
 const MobileNav = () => {
   return (
@@ -190,11 +239,11 @@ const MobileNav = () => {
         <MobileNavItem key={navItem.label} {...navItem} />
       ))}
     </Stack>
-  )
-}
+  );
+};
 
 const MobileNavItem = ({ label, children, href }) => {
-  const { isOpen, onToggle } = useDisclosure()
+  const { isOpen, onToggle } = useDisclosure();
 
   return (
     <Stack spacing={4} onClick={children && onToggle}>
@@ -240,28 +289,28 @@ const MobileNavItem = ({ label, children, href }) => {
         </Stack>
       </Collapse>
     </Stack>
-  )
-}
+  );
+};
 
 const NAV_ITEMS = [
   {
     label: 'Gestión',
     href: '#',
-    subLabel: 'Implementar un sistema de gestión de producción centralizado.'
+    subLabel: 'Implementar un sistema de gestión de producción centralizado.',
   },
   {
     label: 'Optimización',
     href: '#',
-    subLabel: 'Optimizar la asignación de recursos y tiempos de producción.'
+    subLabel: 'Optimizar la asignación de recursos y tiempos de producción.',
   },
   {
     label: 'Eficiencia',
     href: '#',
-    subLabel: 'Reducir los tiempos de inactividad y mejorar la calidad del producto final.'
+    subLabel: 'Reducir los tiempos de inactividad y mejorar la calidad del producto final.',
   },
   {
     label: 'Apoyo',
     href: '#',
-    subLabel: 'Facilitar la generación de reportes y análisis de datos para la toma de decisiones.'
+    subLabel: 'Facilitar la generación de reportes y análisis de datos para la toma de decisiones.',
   },
-]
+];

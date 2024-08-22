@@ -11,13 +11,16 @@ import {
   Stack,
   Text,
   useColorModeValue,
+  useToast, // Importa useToast
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router'; 
+import { useCart } from '../context/CartContext'; 
 import supabase from '../lib/supabaseClient';
 
 import { FcPhone, FcTabletAndroid, FcHighPriority, FcManager, FcInfo } from 'react-icons/fc';
 
-const Card = ({ heading, description, price, icon }) => {
+const Card = ({ product, onAddToCart }) => {
   return (
     <Box
       maxW={{ base: 'full', md: '420px' }}
@@ -41,27 +44,30 @@ const Card = ({ heading, description, price, icon }) => {
           rounded={'full'}
           bg={useColorModeValue('gray.100', 'gray.700')}
         >
-          {icon}
+          {product.icon}
         </Flex>
         <Box mt={2}>
-          <Heading size="md">{heading}</Heading>
+          <Heading size="md">{product.name}</Heading>
           <Text mt={1} fontSize={'sm'}>
-            {description}
+            {product.description || 'No description available'}
           </Text>
           <Text mt={1} fontSize={'sm'} fontWeight={'bold'}>
-            ${price}
+            ${product.price.toFixed(2)}
           </Text>
         </Box>
-        <Button variant={'solid'} colorScheme={'blue'} size={'sm'}>
-          Comprar
+        <Button variant={'solid'} colorScheme={'blue'} size={'sm'} onClick={() => onAddToCart(product)}>
+          Añadir
         </Button>
       </Stack>
     </Box>
   );
 };
 
-export default function GridListWith() {
+export default function ProdList() {
   const [products, setProducts] = useState([]);
+  const { addToCart } = useCart(); 
+  const router = useRouter(); 
+  const toast = useToast(); // Inicializa useToast
 
   useEffect(() => {
     async function fetchProducts() {
@@ -87,18 +93,72 @@ export default function GridListWith() {
     'Support': FcInfo,
   };
 
+  const handleAddToCart = async (product) => {
+    try {
+      const { data, error: userError } = await supabase.auth.getUser();
+  
+      if (userError) {
+        console.error("Error fetching user:", userError);
+        throw userError;
+      }
+  
+      const user = data?.user;
+  
+      if (!user || !user.id) {
+        throw new Error('User ID is not available.');
+      }
+  
+      console.log("User ID:", user.id);
+      console.log("Product ID:", product.id);
+  
+      const { data: insertData, error } = await supabase
+        .from('cart_items')
+        .insert([{ 
+          user_id: user.id,
+          product_id: product.id,
+          quantity: 1
+        }]);
+  
+      if (error) {
+        console.error('Error adding product to cart:', error.message); 
+        throw error;
+      } else {
+        console.log('Product added to cart in database:', insertData); 
+
+        // Mostrar un toast de éxito
+        toast({
+          title: "Producto añadido.",
+          description: `El producto ${product.name} se ha añadido al carrito.`,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      console.error('Failed to add to cart:', error.message); 
+
+      // Mostrar un toast de error
+      toast({
+        title: "Error al añadir al carrito.",
+        description: error.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
+
   return (
     <Box p={4}>
       <Stack spacing={4} as={Container} maxW={'3xl'} textAlign={'center'}>
-      <Heading
-            fontWeight={600}
-            fontSize={{ base: '2xl', sm: '4xl', md: '6xl' }}
-            lineHeight={'190%'}>
-            
-            <Text as={'span'} color={'gray'}>
-              
-            </Text>
-          </Heading>
+        <Heading
+          fontWeight={600}
+          fontSize={{ base: '2xl', sm: '4xl', md: '6xl' }}
+          lineHeight={'190%'}>
+          <Text as={'span'} color={'gray'}>
+            Nuestros Productos
+          </Text>
+        </Heading>
         <Text color={'gray.600'} fontSize={{ base: 'sm', sm: 'lg' }}>
           Descubre nuestra gama de dispositivos electrónicos de última generación, diseñados para ofrecer un rendimiento superior y una experiencia de usuario inigualable.
         </Text>
@@ -107,13 +167,11 @@ export default function GridListWith() {
       <Container maxW={'5xl'} mt={20}>
         <Stack spacing={6}>
           <Flex flexWrap="wrap" gridGap={150} justify="center">
-            {products.map((product, index) => (
+            {products.map((product) => (
               <Card
                 key={product.id}
-                heading={product.name}
-                description={product.description || 'No description available'}
-                price={product.price.toFixed(2)}
-                icon={<Icon as={iconMap[product.name] || FcTabletAndroid} w={10} h={10} />}
+                product={{ ...product, icon: <Icon as={iconMap[product.name] || FcTabletAndroid} w={10} h={10} /> }}
+                onAddToCart={handleAddToCart} 
               />
             ))}
           </Flex>
