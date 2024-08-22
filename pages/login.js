@@ -15,6 +15,8 @@ import {
   useToast,
   Text,
 } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
+import NextLink from 'next/link'; // Importa NextLink para navegación interna
 
 // Creación del cliente Supabase
 const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_KEY);
@@ -24,6 +26,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const toast = useToast();
+  const router = useRouter();  // Aquí se inicializa useRouter
 
   const handleLogin = async () => {
     try {
@@ -31,20 +34,25 @@ export default function Login() {
         email,
         password,
       });
-
+  
       if (loginError) {
-        throw loginError;
+        if (loginError.message.includes('Email not confirmed')) {
+          setError('Tu correo electrónico no está confirmado. Revisa tu bandeja de entrada para confirmar tu correo.');
+        } else {
+          throw loginError;
+        }
+      } else {
+        console.log('User logged in successfully');
+        toast({
+          title: 'Inicio de sesión exitoso.',
+          description: 'Has iniciado sesión con éxito.',
+          status: 'success',
+          duration: 9000,
+          isClosable: true,
+        });
+        // Redirigir a localhost:3000 después del login
+        router.push('/');
       }
-
-      console.log('User logged in successfully');
-      toast({
-        title: 'Inicio de sesión exitoso.',
-        description: 'Has iniciado sesión con éxito.',
-        status: 'success',
-        duration: 9000,
-        isClosable: true,
-      });
-      // Redirect or perform some action after login
     } catch (error) {
       setError(error.message);
       console.error('Error logging in:', error.message);
@@ -57,6 +65,7 @@ export default function Login() {
       });
     }
   };
+  
 
   return (
     <Stack minH={'100vh'} direction={{ base: 'column', md: 'row' }}>
@@ -97,6 +106,13 @@ export default function Login() {
           <Button colorScheme={'green'} variant={'solid'} onClick={handleLogin}>
             Iniciar sesión
           </Button>
+          {/* Sección para redirigir al registro */}
+          <Text textAlign="center" mt={4}>
+            ¿No tienes cuenta?{' '}
+            <NextLink href="/register" passHref>
+              <Button variant="link" colorScheme="blue">Regístrate</Button>
+            </NextLink>
+          </Text>
         </Stack>
       </Flex>
       <Flex flex={1}>

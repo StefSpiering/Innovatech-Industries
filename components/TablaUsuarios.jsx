@@ -18,7 +18,7 @@ const TablaUsuarios = () => {
       try {
         const { data, error } = await supabase
           .from('users')
-          .select('id, email, first_name, last_name, supabase_id, created_at');
+          .select('id, email, first_name, last_name, created_at');
 
         if (error) throw error;
 
@@ -54,7 +54,6 @@ const TablaUsuarios = () => {
               <Th>Email</Th>
               <Th>Nombre</Th>
               <Th>Apellido</Th>
-              <Th>ID de Supabase</Th>
               <Th>Fecha de Registro</Th>
             </Tr>
           </Thead>
@@ -65,7 +64,6 @@ const TablaUsuarios = () => {
                 <Td>{user.email}</Td>
                 <Td>{user.first_name}</Td>
                 <Td>{user.last_name}</Td>
-                <Td>{user.supabase_id}</Td>
                 <Td>{new Date(user.created_at).toLocaleDateString()}</Td>
               </Tr>
             ))}

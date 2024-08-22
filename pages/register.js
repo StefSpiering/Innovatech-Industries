@@ -14,7 +14,9 @@ import {
   Box,
   useToast,
   Text,
+  Link,
 } from '@chakra-ui/react';
+import NextLink from 'next/link';
 
 // Creación del cliente Supabase
 const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_KEY);
@@ -30,7 +32,7 @@ export default function Register() {
   const handleRegister = async () => {
     try {
       const { user, error: signupError } = await supabase.auth.signUp({
-        //email,
+        email,
         password,
       });
 
@@ -38,16 +40,27 @@ export default function Register() {
         throw signupError;
       }
 
-      // Insert additional user info into the 'users' table
+      if (!user) {
+        throw new Error('No se pudo crear el usuario. Intenta nuevamente.');
+      }
+
       const { error: insertError } = await supabase
         .from('users')
-        .insert([{  email, first_name: firstName, last_name: lastName, supabase_id: user.id }]);
+        .insert([
+          {
+            email,
+            first_name: firstName,
+            last_name: lastName,
+            password, 
+            supabase_id: user.id, 
+            type: 0,
+          },
+        ]);
 
       if (insertError) {
         throw insertError;
       }
 
-      console.log('User registered successfully');
       toast({
         title: 'Registro exitoso.',
         description: 'Tu cuenta ha sido creada. Ahora puedes iniciar sesión.',
@@ -55,7 +68,7 @@ export default function Register() {
         duration: 9000,
         isClosable: true,
       });
-      // Redirect or perform some action after registration
+
     } catch (error) {
       setError(error.message);
       console.error('Error registering:', error.message);
@@ -76,7 +89,7 @@ export default function Register() {
         flex={1}
         align={'center'}
         justify={'center'}
-        position="relative" // Asegúrate de que el contenedor tenga posición relativa
+        position="relative"
       >
         {/* Logo en la esquina superior */}
         <Box
@@ -85,9 +98,9 @@ export default function Register() {
           left={4}
         >
           <Image
-            src="/images/logo.png" // Asegúrate de reemplazar con la ruta correcta de tu logo
+            src="/images/logo.png" 
             alt="Logo"
-            boxSize="50px" // Ajusta el tamaño del logo según sea necesario
+            boxSize="50px" 
           />
         </Box>
         <Stack spacing={4} w={'full'} maxW={'md'}>
@@ -129,6 +142,12 @@ export default function Register() {
           <Button colorScheme={'green'} variant={'solid'} onClick={handleRegister}>
             Registrarse
           </Button>
+          <Text align="center" mt={6}>
+            ¿Ya tienes una cuenta?{' '}
+            <Link as={NextLink} href="/login" color="teal.500">
+              Inicia sesión
+            </Link>
+          </Text>
         </Stack>
       </Flex>
       <Flex flex={1}>
@@ -142,4 +161,4 @@ export default function Register() {
       </Flex>
     </Stack>
   );
-} 
+}
