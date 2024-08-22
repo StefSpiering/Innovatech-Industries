@@ -1,9 +1,7 @@
-'use client';
-
-import { Box, Flex, useColorModeValue } from '@chakra-ui/react';
-import Header from '../components/Header.jsx'; // Verifica que esta ruta sea correcta y la extensión sea .jsx
-import Sidebar from '../components/Sidebar.jsx'; // Verifica que esta ruta sea correcta y la extensión sea .jsx
-import Consulta from '../components/Consulta.jsx'; // Verifica que esta ruta sea correcta y la extensión sea .jsx
+import { Flex, Box, useColorModeValue } from '@chakra-ui/react';
+import Header from '../components/Header';
+import Sidebar from '../components/Sidebar';
+import ConsultaList from '../components/ConsultaList';
 
 export default function SeccionConsultas() {
   return (
@@ -24,9 +22,9 @@ export default function SeccionConsultas() {
           >
             <Box mb={4}>
               <h1>Sección para Consultas</h1>
-              <p>Realiza tus consultas personalizadas en esta sección.</p>
+              <p>Contestar tus consultas.</p>
             </Box>
-            <Consulta />
+            <ConsultaList />
           </Box>
         </Box>
       </Flex>

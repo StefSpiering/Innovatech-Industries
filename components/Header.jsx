@@ -1,27 +1,9 @@
-import {
-  Box,
-  Flex,
-  Text,
-  IconButton,
-  Button,
-  Stack,
-  Collapse,
-  Icon,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  useColorModeValue,
-  useBreakpointValue,
-  useDisclosure,
-  Image,
-} from '@chakra-ui/react';
-import {
-  HamburgerIcon,
-  CloseIcon,
-  ChevronDownIcon,
-  ChevronRightIcon,
-} from '@chakra-ui/icons';
-import { FaShoppingCart } from 'react-icons/fa'; // Importar el ícono del carrito de compras
+'use client';
+
+import { FaUserCircle, FaShoppingCart } from 'react-icons/fa';
+import { Box, Flex, Text, IconButton, Button, Stack, Collapse, Icon, Popover, PopoverTrigger, PopoverContent, useColorModeValue, useBreakpointValue, useDisclosure, Image, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon } from '@chakra-ui/react';
+
+import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 import NextLink from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
@@ -34,9 +16,7 @@ export default function WithSubnavigation() {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+      const { data: { session } } = await supabase.auth.getSession();
 
       if (session) {
         setUser(session.user);
@@ -90,12 +70,15 @@ export default function WithSubnavigation() {
           />
         </Flex>
         <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }} align={'center'}>
-          <Image
-            src="/images/Logo.png" 
-            alt="Logo"
-            boxSize="50px" 
-            mr={4} 
-          />
+          <NextLink href="/" passHref>
+            <Image
+              src="/images/Logo.png"
+              alt="Logo"
+              boxSize="50px"
+              mr={4}
+              cursor="pointer"
+            />
+          </NextLink>
           <Text
             textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
             fontFamily={'heading'}
@@ -115,7 +98,36 @@ export default function WithSubnavigation() {
           spacing={6}>
           {user ? (
             <Flex align="center">
-              <Text mr={4}>Hola, {user.email}</Text>
+              <Popover>
+                <PopoverTrigger>
+                  <IconButton
+                    icon={<FaUserCircle />}
+                    colorScheme="blue"
+                    variant="ghost"
+                    aria-label="Perfil"
+                  />
+                </PopoverTrigger>
+                <PopoverContent>
+                  <Accordion allowToggle>
+                    <AccordionItem>
+                      <AccordionButton>
+                        <Box flex="1" textAlign="left">
+                          Configuración
+                        </Box>
+                        <AccordionIcon />
+                      </AccordionButton>
+                      <AccordionPanel pb={4}>
+                        <Button colorScheme="blue" onClick={() => router.push('/configuracion')}>
+                          Ir a Configuración
+                        </Button>
+                        <Button mt={4} colorScheme="red" onClick={handleLogout}>
+                          Cerrar sesión
+                        </Button>
+                      </AccordionPanel>
+                    </AccordionItem>
+                  </Accordion>
+                </PopoverContent>
+              </Popover>
               <NextLink href="/carrito-compras" passHref>
                 <IconButton
                   icon={<FaShoppingCart />}
@@ -125,9 +137,6 @@ export default function WithSubnavigation() {
                   mr={4}
                 />
               </NextLink>
-              <Button colorScheme="red" onClick={handleLogout}>
-                Cerrar sesión
-              </Button>
             </Flex>
           ) : (
             <>
@@ -294,23 +303,13 @@ const MobileNavItem = ({ label, children, href }) => {
 
 const NAV_ITEMS = [
   {
-    label: 'Gestión',
-    href: '#',
+    label: 'Ayuda',
+    href: '/seccion-ayuda',
     subLabel: 'Implementar un sistema de gestión de producción centralizado.',
   },
   {
-    label: 'Optimización',
-    href: '#',
+    label: 'Consultas',
+    href: '/consultas',
     subLabel: 'Optimizar la asignación de recursos y tiempos de producción.',
-  },
-  {
-    label: 'Eficiencia',
-    href: '#',
-    subLabel: 'Reducir los tiempos de inactividad y mejorar la calidad del producto final.',
-  },
-  {
-    label: 'Apoyo',
-    href: '#',
-    subLabel: 'Facilitar la generación de reportes y análisis de datos para la toma de decisiones.',
   },
 ];

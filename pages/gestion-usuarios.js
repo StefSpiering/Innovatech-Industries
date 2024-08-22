@@ -29,7 +29,7 @@ const Usuarios = () => {
               En esta sección, puedes ver la lista de usuarios registrados en la plataforma.
             </Text>
             <Text fontSize="md" color="gray.600">
-              Esta tabla muestra información  como el correo electrónico, nombre, apellido y la fecha en la que se registró cada usuario.
+              Esta tabla muestra información básica como el correo electrónico, nombre, apellido y la fecha en la que se registró cada usuario.
             </Text>
           </Stack>
 

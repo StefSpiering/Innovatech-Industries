@@ -1,38 +1,62 @@
-import { Box, Heading, Text, Button, Flex } from '@chakra-ui/react';
-import Sidebar from '../components/Sidebar'; // Asumiendo que tienes un componente Sidebar para el menú
-import Header from '../components/Header';
-import ConsultasTable from '../components/ConsultasTable'; // Importa tu componente de la tabla de consultas
+import React, { useState } from 'react';
+import { Box, Heading, Flex } from '@chakra-ui/react';
 
-const ConsultasReportes = () => {
+import ReportsTable from '../components/ReportsTable'; // Asegúrate de tener este componente
+import Sidebar from '../components/Sidebar';
+import Header from '../components/Header';
+import AddReportForm from '../components/AddReportForm';
+
+const ManageReports = () => {
+  const [selectedReport, setSelectedReport] = useState(null);
+
+  // Manejar la selección de un reporte para edición
+  const handleEditReport = (report) => {
+    setSelectedReport(report);
+  };
+
+  // Limpiar la selección cuando se complete la edición o el agregado
+  const handleFormSubmit = () => {
+    setSelectedReport(null);
+  };
+
   return (
     <Box p={6}>
       <Header />
-      <Heading as="h1" mb={6} color="green">
-        Consultas y Reportes
-      </Heading>
-
       <Flex>
-        {/* Sidebar */}
         <Box width="250px" bg="white" p={5} boxShadow="md">
           <Sidebar />
         </Box>
 
-        {/* Main content */}
         <Box flex="1" p={5}>
-          <Text mb={4}>
-            Aquí puedes generar consultas y reportes sobre los datos. Utiliza las herramientas a continuación para obtener la información que necesitas.
-          </Text>
+          <Heading as="h1" mb={6} color="green">
+            Consultas y Reportes
+          </Heading>
 
-          <Button colorScheme="teal" mb={4}>
-            Generar Reporte
-          </Button>
+          
 
-          {/* Aquí se renderiza la tabla de consultas */}
-          <ConsultasTable />
+          <Box mb={6}>
+            {/* Pasar handleEditReport como prop */}
+            <ReportsTable onEditReport={handleEditReport} />
+          </Box>
+          <Box mb={6}>
+          <Heading as="h1" mb={6} color="gray" textAlign="center">
+            Generar nuevo Reporte
+          </Heading>
+
+            {/* Pasar handleEditReport como prop */}
+            <AddReportForm onEditReport={handleEditReport} />
+          </Box>
+
+          <Box>
+            {/* Pasar el reporte seleccionado como prop */}
+            
+            
+            
+          </Box>
         </Box>
       </Flex>
     </Box>
   );
 };
 
-export default ConsultasReportes;
+export default ManageReports;

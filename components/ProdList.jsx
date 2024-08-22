@@ -10,8 +10,9 @@ import {
   Icon,
   Stack,
   Text,
+  Input,
   useColorModeValue,
-  useToast, // Importa useToast
+  useToast, 
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router'; 
@@ -55,7 +56,7 @@ const Card = ({ product, onAddToCart }) => {
             ${product.price.toFixed(2)}
           </Text>
         </Box>
-        <Button variant={'solid'} colorScheme={'blue'} size={'sm'} onClick={() => onAddToCart(product)}>
+        <Button variant={'solid'} colorScheme={'green'} size={'sm'} onClick={() => onAddToCart(product)}>
           Añadir
         </Button>
       </Stack>
@@ -65,9 +66,11 @@ const Card = ({ product, onAddToCart }) => {
 
 export default function ProdList() {
   const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]); // Estado para productos filtrados
+  const [searchTerm, setSearchTerm] = useState(''); // Estado para el término de búsqueda
   const { addToCart } = useCart(); 
   const router = useRouter(); 
-  const toast = useToast(); // Inicializa useToast
+  const toast = useToast(); 
 
   useEffect(() => {
     async function fetchProducts() {
@@ -79,11 +82,24 @@ export default function ProdList() {
         console.error('Error fetching products:', error);
       } else {
         setProducts(data);
+        setFilteredProducts(data); // Inicialmente mostrar todos los productos
       }
     }
 
     fetchProducts();
   }, []);
+
+  // Manejar cambios en el campo de búsqueda
+  const handleSearchChange = (e) => {
+    const value = e.target.value.toLowerCase();
+    setSearchTerm(value);
+
+    const filtered = products.filter((product) =>
+      product.name.toLowerCase().includes(value)
+    );
+
+    setFilteredProducts(filtered);
+  };
 
   const iconMap = {
     'Smartphone': FcPhone,
@@ -125,7 +141,6 @@ export default function ProdList() {
       } else {
         console.log('Product added to cart in database:', insertData); 
 
-        // Mostrar un toast de éxito
         toast({
           title: "Producto añadido.",
           description: `El producto ${product.name} se ha añadido al carrito.`,
@@ -137,7 +152,6 @@ export default function ProdList() {
     } catch (error) {
       console.error('Failed to add to cart:', error.message); 
 
-      // Mostrar un toast de error
       toast({
         title: "Error al añadir al carrito.",
         description: error.message,
@@ -164,10 +178,16 @@ export default function ProdList() {
         </Text>
       </Stack>
 
-      <Container maxW={'5xl'} mt={20}>
+      <Container maxW={'5xl'} mt={10}>
+        <Input
+          placeholder="Buscar productos por nombre..."
+          value={searchTerm}
+          onChange={handleSearchChange}
+          mb={6}
+        />
         <Stack spacing={6}>
           <Flex flexWrap="wrap" gridGap={150} justify="center">
-            {products.map((product) => (
+            {filteredProducts.map((product) => (
               <Card
                 key={product.id}
                 product={{ ...product, icon: <Icon as={iconMap[product.name] || FcTabletAndroid} w={10} h={10} /> }}
@@ -175,7 +195,7 @@ export default function ProdList() {
               />
             ))}
           </Flex>
-          {products.length > 0 && <Divider />}
+          {filteredProducts.length > 0 && <Divider />}
         </Stack>
       </Container>
     </Box>
