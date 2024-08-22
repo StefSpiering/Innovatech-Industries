@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { Table, Thead, Tbody, Tr, Th, Td, Box, Spinner, Text, useToast, TableContainer, TableCaption } from '@chakra-ui/react';
 import { createClient } from '@supabase/supabase-js';
 
-// Creación del cliente Supabase
 const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_KEY);
 
 const TablaUsuarios = () => {

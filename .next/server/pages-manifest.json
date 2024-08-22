@@ -1,8 +1,8 @@
 {
   "/_app": "pages/_app.js",
-  "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/": "pages/index.js",
-  "/login": "pages/login.js",
-  "/register": "pages/register.js"
+  "/_error": "pages/_error.js",
+  "/gestion-productos": "pages/gestion-productos.js",
+  "/gestion-usuarios": "pages/gestion-usuarios.js",
+  "/seccion-ayuda": "pages/seccion-ayuda.js"
 }

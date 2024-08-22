@@ -1,98 +1,62 @@
-'use client';
+import { useState } from 'react';
+import { Box, Button, Text, Textarea, useToast } from '@chakra-ui/react';
 
-import {
-  Button,
-  Flex,
-  FormControl,
-  FormLabel,
-  Heading,
-  Input,
-  Stack,
-  useColorModeValue,
-  HStack,
-  Avatar,
-  AvatarBadge,
-  IconButton,
-  Center,
-} from '@chakra-ui/react';
-import { SmallCloseIcon } from '@chakra-ui/icons';
+export default function Consulta({ consulta }) {
+  const [respuesta, setRespuesta] = useState('');
+  const toast = useToast();
 
-export default function UserProfileEdit() {
+  const handleSubmit = async () => {
+    try {
+      const response = await fetch('/api/responder-consulta', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ consultaId: consulta.id, respuesta }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error);
+      }
+
+      toast({
+        title: 'Respuesta enviada.',
+        description: 'Se ha enviado la respuesta al usuario.',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      });
+    } catch (error) {
+      console.error('Error al enviar la respuesta:', error);
+      toast({
+        title: 'Error.',
+        description: 'No se pudo enviar la respuesta.',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
+
+  if (!consulta) {
+    return <Text>Consulta no disponible.</Text>;
+  }
+
   return (
-    <Flex
-      minH={'100vh'}
-      align={'center'}
-      justify={'center'}
-      bg={useColorModeValue('gray.50', 'gray.800')}>
-      <Stack
-        spacing={4}
-        w={'full'}
-        maxW={'md'}
-        bg={useColorModeValue('white', 'gray.700')}
-        rounded={'xl'}
-        boxShadow={'lg'}
-        p={6}
-        my={12}>
-        <Heading lineHeight={1.1} fontSize={{ base: '2x1', sm: '5xl' }} color="gray">
-          Consultas
-        </Heading>
-        <FormControl id="userIcon">
-          <FormLabel>Adjunte su consulta:</FormLabel>
-          <Stack direction={['column', 'row']} spacing={6}>
-            <Center>
-             
-            </Center>
-            <Center w="full">
-             
-            </Center>
-          </Stack>
-        </FormControl>
-        <FormControl id="userName" isRequired>
-          <FormLabel>Nombre de Usuario</FormLabel>
-          <Input
-            placeholder="Nombre de Usuario"
-            _placeholder={{ color: 'gray.500' }}
-            type="text"
-          />
-        </FormControl>
-        <FormControl id="email" isRequired>
-          <FormLabel>Dirección de Correo Electrónico</FormLabel>
-          <Input
-            placeholder="tu-email@ejemplo.com"
-            _placeholder={{ color: 'gray.500' }}
-            type="email"
-          />
-        </FormControl>
-       
-        <FormControl id="userQuery">
-          <FormLabel>Consulta</FormLabel>
-          <Input
-            placeholder="Escribe tu consulta aquí"
-            _placeholder={{ color: 'gray.500' }}
-            type="text"
-          />
-        </FormControl>
-        <Stack spacing={6} direction={['column', 'row']}>
-          <Button
-            bg={'red.400'}
-            color={'white'}
-            w="full"
-            _hover={{
-              bg: 'red.500',
-            }}>
-            Cancelar
-          </Button>
-          <Button
-            bg={'green'}
-            color={'white'}
-            w="full"
-            _hover={{
-              bg: 'green',
-            }}>
-            Enviar
-          </Button>
-        </Stack>
-      </Stack>
-    </Flex>
+    <Box p={4} shadow="md" borderWidth="1px">
+      <Text fontWeight="bold">Consulta:</Text>
+      <Text mb={4}>{consulta.consulta}</Text>
+      <Textarea
+        placeholder="Escribe tu respuesta aquí..."
+        value={respuesta}
+        onChange={(e) => setRespuesta(e.target.value)}
+        mb={4}
+      />
+      <Button colorScheme="blue" onClick={handleSubmit}>
+        Enviar Respuesta
+      </Button>
+    </Box>
   );
 }

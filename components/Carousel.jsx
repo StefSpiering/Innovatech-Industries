@@ -35,17 +35,14 @@ export default function CaptionCarousel() {
   const cards = [
     {
       title: 'Smartphone de Última Generación',
-      text: "Descubre nuestro smartphone más reciente, con características innovadoras y un diseño elegante.",
       image: '/images/Hardy1.png', // Reemplaza con tu propia imagen
     },
     {
       title: 'Tablet Avanzada',
-      text: "Nuestra tablet más avanzada para profesionales y entusiastas, con una pantalla impresionante y rendimiento superior.",
       image: '/images/Tablet.png', // Reemplaza con tu propia imagen
     },
     {
       title: 'Accesorios Inteligentes',
-      text: "Accesorios diseñados para complementar tu tecnología, mejorando tu experiencia diaria.",
       image: '/images/Acse2.png', // Reemplaza con tu propia imagen
     },
   ]
