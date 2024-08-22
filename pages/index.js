@@ -55,11 +55,11 @@ const HomePage = () => {
         {/* Contenedor principal para el contenido */}
         <Flex flex="1" p={6}>
           {/* Mostrar Sidebar solo si el usuario es administrador */}
-          
-            <Box width="250px" >
+          {isAdmin && (
+            
               <Sidebar />
-            </Box>
-          
+            
+          )}
 
           {/* Contenido principal */}
           <Flex flex="1" direction="column" pl={isAdmin ? 6 : 0}>

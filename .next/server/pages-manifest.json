@@ -2,7 +2,14 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
+  "/gestion-usuarios": "pages/gestion-usuarios.js",
   "/": "pages/index.js",
-  "/store": "pages/store.js",
+  "/login": "pages/login.js",
+  "/ordenes-compra": "pages/ordenes-compra.js",
+  "/gestion-productos": "pages/gestion-productos.js",
+  "/gestion-proveedores": "pages/gestion-proveedores.js",
+  "/consultas-reportes": "pages/consultas-reportes.js",
+  "/seccion-ayuda": "pages/seccion-ayuda.js",
+  "/seccion-consultas": "pages/seccion-consultas.js",
   "/configuracion": "pages/configuracion.js"
 }

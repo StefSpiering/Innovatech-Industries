@@ -6,7 +6,7 @@ import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_KEY);
 
-const TablaUsuarios = () => {
+const TablaUsuarios = ({ searchTerm }) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -42,6 +42,11 @@ const TablaUsuarios = () => {
   if (loading) return <Spinner size="xl" />;
   if (error) return <Text color="red.500">{error}</Text>;
 
+  // Filtrar usuarios por nombre o apellido
+  const filteredUsers = users.filter((user) =>
+    `${user.first_name} ${user.last_name}`.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <Box p={4}>
       <TableContainer>
@@ -57,7 +62,7 @@ const TablaUsuarios = () => {
             </Tr>
           </Thead>
           <Tbody>
-            {users.map((user) => (
+            {filteredUsers.map((user) => (
               <Tr key={user.id}>
                 <Td>{user.id}</Td>
                 <Td>{user.email}</Td>
@@ -69,6 +74,11 @@ const TablaUsuarios = () => {
           </Tbody>
         </Table>
       </TableContainer>
+      {filteredUsers.length === 0 && (
+        <Text mt={4} color="gray.500">
+          No se encontraron usuarios con ese nombre.
+        </Text>
+      )}
     </Box>
   );
 };
