@@ -28,13 +28,11 @@ const ManageSuppliers = () => {
         </Box>
 
         <Box flex="1" p={5}>
-          <Heading as="h1" mb={6} color="green">
-            Consultas y Reportes
-          </Heading>
+          
 
-          <Heading as="h1" size="2xl" mb={6} textAlign="center">
-            Manage Suppliers
-          </Heading>
+        <Heading as="h1" mb={6} color="green">
+        Gestión de Proveedores
+      </Heading>
 
           <Box mb={6}>
             {/* Pasar handleEditSupplier como prop */}

@@ -7,6 +7,7 @@ const AddProductForm = ({ selectedProduct, onFormSubmit }) => {
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
   const [supplierId, setSupplierId] = useState('');
+  const [cantidades, setCantidades] = useState(0); // Nueva columna
   const [suppliers, setSuppliers] = useState([]);
   const toast = useToast();
 
@@ -39,12 +40,14 @@ const AddProductForm = ({ selectedProduct, onFormSubmit }) => {
       setDescription(selectedProduct.description);
       setPrice(selectedProduct.price);
       setSupplierId(selectedProduct.supplier_id);
+      setCantidades(selectedProduct.cantidades); // Asignar cantidades al editar
     } else {
       // Limpiar el formulario si no hay producto seleccionado
       setName('');
       setDescription('');
       setPrice('');
       setSupplierId('');
+      setCantidades(0);
     }
   }, [selectedProduct]);
 
@@ -60,7 +63,8 @@ const AddProductForm = ({ selectedProduct, onFormSubmit }) => {
             name,
             description,
             price,
-            supplier_id: supplierId
+            supplier_id: supplierId,
+            cantidades, // Actualizar cantidades
           })
           .eq('id', selectedProduct.id);
 
@@ -77,7 +81,7 @@ const AddProductForm = ({ selectedProduct, onFormSubmit }) => {
         // Agregar un nuevo producto
         const { error: insertError } = await supabase
           .from('products')
-          .insert([{ name, description, price, supplier_id: supplierId }]);
+          .insert([{ name, description, price, supplier_id: supplierId, cantidades }]);
 
         if (insertError) throw insertError;
 
@@ -149,9 +153,18 @@ const AddProductForm = ({ selectedProduct, onFormSubmit }) => {
           </Select>
         </FormControl>
 
+        <FormControl mt={4}>
+          <FormLabel>Cantidades</FormLabel>
+          <Input
+            type="number"
+            value={cantidades}
+            onChange={(e) => setCantidades(e.target.value)}
+          />
+        </FormControl>
+
         <Button
           type="submit"
-          colorScheme="teal"
+          colorScheme="green"
           mt={4}
         >
           {selectedProduct ? 'Update Product' : 'Add Product'}

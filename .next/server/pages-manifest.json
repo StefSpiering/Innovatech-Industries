@@ -2,7 +2,9 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
+  "/gestion-proveedores": "pages/gestion-proveedores.js",
+  "/gestion-usuarios": "pages/gestion-usuarios.js",
   "/": "pages/index.js",
   "/store": "pages/store.js",
-  "/configuracion": "pages/configuracion.js"
+  "/gestion-transacciones": "pages/gestion-transacciones.js"
 }

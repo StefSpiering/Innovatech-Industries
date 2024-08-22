@@ -9,6 +9,7 @@ export default function SeccionConsultas() {
       <Header />
       <Flex>
         <Sidebar />
+        
         <Box
           flex="1"
           bg={useColorModeValue('gray.50', 'gray.800')}
@@ -20,9 +21,11 @@ export default function SeccionConsultas() {
             boxShadow={'lg'}
             p={6}
           >
-            <Box mb={4}>
+             
+            <Box s="h1" mb={6} color="green">
+           
               <h1>Sección para Consultas</h1>
-              <p>Contestar tus consultas.</p>
+              <p>Contestar las consultas.</p>
             </Box>
             <ConsultaList />
           </Box>

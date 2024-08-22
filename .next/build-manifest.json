@@ -27,10 +27,20 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/configuracion": [
+    "/gestion-proveedores": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/configuracion.js"
+      "static/chunks/pages/gestion-proveedores.js"
+    ],
+    "/gestion-transacciones": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/gestion-transacciones.js"
+    ],
+    "/gestion-usuarios": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/gestion-usuarios.js"
     ],
     "/store": [
       "static/chunks/webpack.js",

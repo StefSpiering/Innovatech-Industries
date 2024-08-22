@@ -22,10 +22,9 @@ const ManagePurchaseOrders = () => {
             
           </Heading>
 
-          <Heading as="h1" size="2xl" mb={6} textAlign="center">
-            Manage Purchase Orders
-          </Heading>
-
+          <Heading as="h1" mb={6} color="green">
+        Ordenes de compra
+      </Heading>
           <Box mb={6}>
             <PurchaseOrdersTable /> 
             {/* Tabla que muestra las órdenes de compra */}

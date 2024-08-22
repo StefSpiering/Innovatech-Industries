@@ -13,7 +13,7 @@ const ProductsTable = ({ onEditProduct }) => { // Recibe la función de edición
       try {
         const { data, error } = await supabase
           .from('products')
-          .select('id, name, description, price, suppliers(name)'); // Ajusta según la estructura
+          .select('id, name, description, price, cantidades, suppliers(name)'); // Se incluye la columna 'cantidades'
 
         if (error) throw error;
 
@@ -48,6 +48,7 @@ const ProductsTable = ({ onEditProduct }) => { // Recibe la función de edición
             <Th>Description</Th>
             <Th>Price</Th>
             <Th>Supplier</Th>
+            <Th>Quantities</Th> {/* Nueva columna para cantidades */}
             <Th>Actions</Th> {/* Nueva columna para acciones */}
           </Tr>
         </Thead>
@@ -59,6 +60,7 @@ const ProductsTable = ({ onEditProduct }) => { // Recibe la función de edición
               <Td>{product.description}</Td>
               <Td>${product.price}</Td>
               <Td>{product.suppliers?.name}</Td> {/* Ajusta según tu estructura */}
+              <Td>{product.cantidades}</Td> {/* Mostrar las cantidades */}
               <Td>
                 <Button colorScheme="blue" onClick={() => onEditProduct(product)}>
                   Editar

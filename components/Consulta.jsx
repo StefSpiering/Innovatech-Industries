@@ -54,7 +54,7 @@ export default function Consulta({ consulta }) {
         onChange={(e) => setRespuesta(e.target.value)}
         mb={4}
       />
-      <Button colorScheme="blue" onClick={handleSubmit}>
+      <Button colorScheme="green" onClick={handleSubmit}>
         Enviar Respuesta
       </Button>
     </Box>
