@@ -37,8 +37,10 @@ export default function Register() {
       });
 
       if (signupError) {
+        console.error('Signup error details:', signupError);
         throw signupError;
       }
+      console.log('User object:', user);
 
       if (!user) {
         throw new Error('No se pudo crear el usuario. Intenta nuevamente.');
@@ -51,8 +53,7 @@ export default function Register() {
             email,
             first_name: firstName,
             last_name: lastName,
-            password, 
-            supabase_id: user.id, 
+            password,  
             type: 0,
           },
         ]);

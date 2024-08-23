@@ -1,9 +1,42 @@
-// pages/gestion-transacciones.js
-import { Box, Heading, Text, Table, Thead, Tbody, Tr, Th, Td, Button, Flex } from '@chakra-ui/react';
-import Sidebar from '../components/Sidebar'; // Asumiendo que tienes un componente Sidebar para el menú
+import { useEffect, useState } from 'react';
+import { Box, Heading, Text, Table, Thead, Tbody, Tr, Th, Td, Button, Flex, Spinner, useToast } from '@chakra-ui/react';
+import Sidebar from '../components/Sidebar'; 
 import Header from '../components/Header';
+import supabase from '../lib/supabaseClient';
 
 const GestionTransacciones = () => {
+  const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const toast = useToast();
+
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('transactions')
+          .select('*'); 
+
+        if (error) throw error;
+
+        setTransactions(data);
+      } catch (error) {
+        toast({
+          title: 'Error al cargar transacciones.',
+          description: error.message,
+          status: 'error',
+          duration: 9000,
+          isClosable: true,
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTransactions();
+  }, [toast]);
+
+  if (loading) return <Spinner size="xl" />;
+
   return (
     <Box p={6}>
       <Header />
@@ -26,42 +59,23 @@ const GestionTransacciones = () => {
           <Table variant="striped" colorScheme="teal">
             <Thead>
               <Tr>
-                <Th>ID</Th>
+                <Th>ID</Th> {/* ID de la transacción */}
                 <Th>Fecha</Th>
                 <Th>Descripción</Th>
                 <Th>Importe</Th>
-                <Th>Acciones</Th>
+                
               </Tr>
             </Thead>
             <Tbody>
-              <Tr>
-                <Td>1</Td>
-                <Td>2024-08-15</Td>
-                <Td>Compra en tienda A</Td>
-                <Td>$150.00</Td>
-                <Td>
-                  <Button colorScheme="blue" size="sm" mr={2}>
-                    Editar
-                  </Button>
-                  <Button colorScheme="red" size="sm">
-                    Eliminar
-                  </Button>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td>2</Td>
-                <Td>2024-08-16</Td>
-                <Td>Compra en tienda B</Td>
-                <Td>$200.00</Td>
-                <Td>
-                  <Button colorScheme="blue" size="sm" mr={2}>
-                    Editar
-                  </Button>
-                  <Button colorScheme="red" size="sm">
-                    Eliminar
-                  </Button>
-                </Td>
-              </Tr>
+              {transactions.map((transaction) => (
+                <Tr key={transaction.id}>
+                  <Td>{transaction.id}</Td> {/* ID de la transacción */}
+                  <Td>{new Date(transaction.transaction_date).toLocaleString()}</Td>
+                  <Td>{transaction.description}</Td>
+                  <Td>${transaction.amount.toFixed(2)}</Td>
+                  
+                </Tr>
+              ))}
             </Tbody>
           </Table>
         </Box>

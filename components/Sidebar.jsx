@@ -21,10 +21,9 @@ const LinkItems = [
   { name: 'Órdenes de Compra', icon: FiShoppingCart, route: '/ordenes-compra' },
   { name: 'Gestión de Transacciones', icon: FiDollarSign, route: '/gestion-transacciones' },
 
-  { name: 'Mantenimiento de Tablas', icon: FiPackage, route: '/mantenimiento-tablas' },
-  { name: 'Consultas y Reportes', icon: FiDatabase, route: '/consultas-reportes' },
+  { name: 'Reportes', icon: FiDatabase, route: '/consultas-reportes' },
   { name: 'Sección de Ayuda', icon: FiHelpCircle, route: '/seccion-ayuda' },
-  { name: 'Sección para Consultas', icon: FiMail, route: '/seccion-consultas' },
+  { name: 'Sección de Consultas', icon: FiMail, route: '/seccion-consultas' },
   { name: 'Configuración', icon: FiSettings, route: '/configuracion' },
 ];
 

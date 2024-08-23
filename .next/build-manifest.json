@@ -27,50 +27,20 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/configuracion": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/configuracion.js"
-    ],
-    "/consultas-reportes": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/consultas-reportes.js"
-    ],
-    "/gestion-productos": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/gestion-productos.js"
-    ],
     "/gestion-proveedores": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/gestion-proveedores.js"
     ],
+    "/gestion-transacciones": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/gestion-transacciones.js"
+    ],
     "/gestion-usuarios": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/gestion-usuarios.js"
-    ],
-    "/login": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/login.js"
-    ],
-    "/ordenes-compra": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/ordenes-compra.js"
-    ],
-    "/seccion-ayuda": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/seccion-ayuda.js"
-    ],
-    "/seccion-consultas": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/seccion-consultas.js"
     ]
   },
   "ampFirstPages": []

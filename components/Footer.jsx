@@ -49,58 +49,58 @@ export default function Footer() {
       <Container as={Stack} maxW={'6xl'} py={10}>
         <SimpleGrid columns={{ base: 1, sm: 2, md: 4 }} spacing={8}>
           <Stack align={'flex-start'}>
-            <ListHeader>Company</ListHeader>
+            <ListHeader>Compañía</ListHeader>
             <Box as="a" href={'#'}>
-              About Us
+              Sobre Nosotros
             </Box>
             <Box as="a" href={'#'}>
               Blog
             </Box>
             <Box as="a" href={'#'}>
-              Careers
+              Carreras
             </Box>
             <Box as="a" href={'#'}>
-              Contact Us
+              Contáctanos
             </Box>
           </Stack>
 
           <Stack align={'flex-start'}>
-            <ListHeader>Support</ListHeader>
+            <ListHeader>Soporte</ListHeader>
             <Box as="a" href={'#'}>
-              Help Center
+              Centro de Ayuda
             </Box>
             <Box as="a" href={'#'}>
-              Safety Center
+              Centro de Seguridad
             </Box>
             <Box as="a" href={'#'}>
-              Community Guidelines
+              Directrices de la Comunidad
             </Box>
           </Stack>
 
           <Stack align={'flex-start'}>
             <ListHeader>Legal</ListHeader>
             <Box as="a" href={'#'}>
-              Cookies Policy
+              Política de Cookies
             </Box>
             <Box as="a" href={'#'}>
-              Privacy Policy
+              Política de Privacidad
             </Box>
             <Box as="a" href={'#'}>
-              Terms of Service
+              Términos de Servicio
             </Box>
             <Box as="a" href={'#'}>
-              Law Enforcement
+              Cumplimiento de la Ley
             </Box>
           </Stack>
 
           <Stack align={'flex-start'}>
-            <ListHeader>Install App</ListHeader>
+            <ListHeader>Instalar App</ListHeader>
             {/* Puedes añadir aquí los iconos para la App Store y Play Store si lo deseas */}
             <Box as="a" href="#" aria-label="App Store">
-              <Text>App Store Icon</Text>
+              <Text>Icono de App Store</Text>
             </Box>
             <Box as="a" href="#" aria-label="Play Store">
-              <Text>Play Store Icon</Text>
+              <Text>Icono de Play Store</Text>
             </Box>
           </Stack>
         </SimpleGrid>
@@ -118,7 +118,7 @@ export default function Footer() {
           spacing={4}
           justify={{ md: 'space-between' }}
           align={{ md: 'center' }}>
-          <Text>© 2024 Innovatech Industries. All rights reserved</Text>
+          <Text>© 2024 Innovatech Industries. Todos los derechos reservados</Text>
           <Stack direction={'row'} spacing={6}>
             <SocialButton label={'Twitter'} href={'https://twitter.com'}>
               <FaTwitter />
@@ -135,4 +135,3 @@ export default function Footer() {
     </Box>
   )
 }
-

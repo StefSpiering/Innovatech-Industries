@@ -23,6 +23,7 @@ const AddToCartButton = ({ product }) => {
         throw new Error('User ID is not available.');
       }
 
+      // Agrega el producto al carrito en Supabase
       const { data: insertData, error } = await supabase
         .from('cart_items')
         .insert([{ 
@@ -36,6 +37,16 @@ const AddToCartButton = ({ product }) => {
         throw error;
       } else {
         console.log('Product added to cart in database:', insertData); 
+        
+        // Si el producto se añade correctamente a la base de datos, también lo añades a `sessionStorage`
+        let cartItems = JSON.parse(sessionStorage.getItem('cart_items')) || [];
+        cartItems.push({
+          product_id: product.id,
+          quantity: 1, // o la cantidad que desees
+          price: product.price
+        });
+        sessionStorage.setItem('cart_items', JSON.stringify(cartItems));
+
         toast({
           title: 'Producto añadido al carrito.',
           description: `El producto ${product.name} ha sido añadido a tu carrito.`,
@@ -59,10 +70,16 @@ const AddToCartButton = ({ product }) => {
   };
 
   return (
-    <Button onClick={handleAddToCart} isLoading={loading}>
+    <Button
+      colorScheme="blue"
+      onClick={handleAddToCart}
+      isLoading={loading}
+      loadingText="Añadiendo..."
+    >
       Añadir al carrito
     </Button>
   );
 };
+
 
 export default AddToCartButton;

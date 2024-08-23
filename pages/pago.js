@@ -1,6 +1,7 @@
 import { Box, Container, Heading, Text, Button, Stack, FormControl, FormLabel, Input, useToast, SimpleGrid, Divider } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import supabase from '../lib/supabaseClient'; // Asegúrate de que la ruta sea correcta
 
 export default function PagoPage() {
   const [loading, setLoading] = useState(true);
@@ -28,7 +29,7 @@ export default function PagoPage() {
     setPaymentDetails({ ...paymentDetails, [id]: value });
   };
 
-  const handlePayment = () => {
+  const handlePayment = async () => {
     const { pinCode, locality, city, state, name, addressLine, mobile } = address;
     const { cardNumber, expiryDate, cvv, cardHolderName } = paymentDetails;
 
@@ -54,15 +55,97 @@ export default function PagoPage() {
       return;
     }
 
-    toast({
-      title: 'Pago realizado con éxito.',
-      description: 'Tu pago ha sido procesado correctamente.',
-      status: 'success',
-      duration: 5000,
-      isClosable: true,
-    });
-    router.push('/confirmacion');
+     try {
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+  
+      if (sessionError) {
+        throw new Error('No se pudo obtener la sesión del usuario.');
+      }
+  
+      const user = session?.user;
+  
+      if (!user) {
+        throw new Error('No se pudo identificar al usuario.');
+      }
+  
+      
+      const cartItems = JSON.parse(sessionStorage.getItem('cart_items')) || [];
+      console.log("cartItems:", cartItems);
+      
+      // Verifica si cartItems es un array
+      if (!Array.isArray(cartItems)) {
+        throw new Error('Los elementos del carrito no están en el formato correcto.');
+      }
+  
+      // Inserta la transacción
+      const { data: transaction, error: transactionError } = await supabase
+        .from('transactions')
+        .insert({
+          user_id: user.id,
+          transaction_date: new Date().toISOString(),
+          amount: total,
+          description: `Compra realizada por ${name}`,
+        })
+        .select()
+        .single();
+  
+      if (transactionError) {
+        throw new Error('Error al registrar la transacción');
+      }
+  
+      const transaction_id = transaction.id;
+
+      console.log("Transaction ID:", transaction_id);
+      console.log("Cart Items:", cartItems);
+  
+      for (const item of cartItems) {
+        const { product_id, quantity } = item;
+  
+        const { error: itemError } = await supabase
+          .from('transaction_items')
+          .insert({
+            transaction_id,
+            product_id,
+            quantity,
+          });
+  
+        if (itemError) {
+          throw new Error('Error al registrar los detalles de la transacción');
+        }
+  
+        // Actualizar las cantidades en la tabla products
+        const { error: updateError } = await supabase
+          .from('products')
+          .update({ cantidades: supabase.raw('cantidades - ?', quantity) })
+          .eq('id', product_id);
+  
+        if (updateError) {
+          throw new Error('Error al actualizar las cantidades de productos');
+        }
+
+        console.log("Item inserted:", insertData);
+      }
+  
+      toast({
+        title: 'Pago realizado con éxito.',
+        description: 'Tu pago ha sido procesado correctamente.',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      });
+  
+    } catch (error) {
+      console.error('Error al procesar el pago:', error);
+      toast({
+        title: 'Error al procesar el pago.',
+        description: error.message || 'Hubo un problema al procesar tu pago. Inténtalo nuevamente.',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
+
 
   if (loading) {
     return <Text>Cargando...</Text>;
@@ -121,7 +204,13 @@ export default function PagoPage() {
             <Text fontSize="lg">Entrega estándar</Text>
             <Text mb={4}>Entrega gratuita</Text>
             <Divider />
-            <Text fontSize="lg" mt={4}>Total de Productos: 1</Text>
+            <Text fontSize="lg" mt={4}>
+              Total de Productos: 
+              {(() => {
+                const cartItems = JSON.parse(sessionStorage.getItem('cart_items')) || [];
+                return cartItems.length;
+              })()}
+            </Text>
             <Text fontSize="xl" fontWeight="bold" mt={2}>Total a Pagar: ${total.toFixed(2)}</Text>
             <Divider my={4} />
             <Heading as="h3" size="md" mb={4}>Detalles de Pago</Heading>
@@ -144,7 +233,7 @@ export default function PagoPage() {
               </FormControl>
             </SimpleGrid>
             <Button colorScheme="blue" mt={4} onClick={handlePayment} width="full">
-              Continuar al Pago
+              Pagar
             </Button>
           </Box>
         </Box>

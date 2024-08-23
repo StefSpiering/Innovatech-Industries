@@ -23,7 +23,7 @@ const ManagePurchaseOrders = () => {
           </Heading>
 
           <Heading as="h1" size="2xl" mb={6} textAlign="center">
-            Manage Purchase Orders
+            Ordenes de compra
           </Heading>
 
           <Box mb={6}>

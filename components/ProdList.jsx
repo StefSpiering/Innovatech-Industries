@@ -7,24 +7,23 @@ import {
   Divider,
   Flex,
   Heading,
-  Icon,
+  Image,
   Stack,
   Text,
   Input,
   useColorModeValue,
-  useToast, 
+  useToast,
+  SimpleGrid,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router'; 
 import { useCart } from '../context/CartContext'; 
 import supabase from '../lib/supabaseClient';
 
-import { FcPhone, FcTabletAndroid, FcHighPriority, FcManager, FcInfo } from 'react-icons/fc';
-
 const Card = ({ product, onAddToCart }) => {
   return (
     <Box
-      maxW={{ base: 'full', md: '420px' }}
+      maxW={{ base: 'full', md: '350px' }}  // Ajusta el ancho de las tarjetas aquí
       w={'full'}
       borderWidth="2px"
       borderRadius="lg"
@@ -35,18 +34,13 @@ const Card = ({ product, onAddToCart }) => {
       transition='all 0.3s ease'
       _hover={{ boxShadow: 'lg', transform: 'scale(1.02)' }}
     >
+      <Image
+        src={product.image_url || 'https://via.placeholder.com/300'}
+        alt={product.name}
+        borderRadius="lg"
+        mb={4}
+      />
       <Stack align={'start'} spacing={4}>
-        <Flex
-          w={16}
-          h={16}
-          align={'center'}
-          justify={'center'}
-          color={'white'}
-          rounded={'full'}
-          bg={useColorModeValue('gray.100', 'gray.700')}
-        >
-          {product.icon}
-        </Flex>
         <Box mt={2}>
           <Heading size="md">{product.name}</Heading>
           <Text mt={1} fontSize={'sm'}>
@@ -66,8 +60,8 @@ const Card = ({ product, onAddToCart }) => {
 
 export default function ProdList() {
   const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]); // Estado para productos filtrados
-  const [searchTerm, setSearchTerm] = useState(''); // Estado para el término de búsqueda
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const { addToCart } = useCart(); 
   const router = useRouter(); 
   const toast = useToast(); 
@@ -82,14 +76,13 @@ export default function ProdList() {
         console.error('Error fetching products:', error);
       } else {
         setProducts(data);
-        setFilteredProducts(data); // Inicialmente mostrar todos los productos
+        setFilteredProducts(data);
       }
     }
 
     fetchProducts();
   }, []);
 
-  // Manejar cambios en el campo de búsqueda
   const handleSearchChange = (e) => {
     const value = e.target.value.toLowerCase();
     setSearchTerm(value);
@@ -99,14 +92,6 @@ export default function ProdList() {
     );
 
     setFilteredProducts(filtered);
-  };
-
-  const iconMap = {
-    'Smartphone': FcPhone,
-    'Tablet': FcTabletAndroid,
-    'Accessory': FcHighPriority,
-    'Quality': FcManager,
-    'Support': FcInfo,
   };
 
   const handleAddToCart = async (product) => {
@@ -124,9 +109,6 @@ export default function ProdList() {
         throw new Error('User ID is not available.');
       }
   
-      console.log("User ID:", user.id);
-      console.log("Product ID:", product.id);
-  
       const { data: insertData, error } = await supabase
         .from('cart_items')
         .insert([{ 
@@ -139,8 +121,6 @@ export default function ProdList() {
         console.error('Error adding product to cart:', error.message); 
         throw error;
       } else {
-        console.log('Product added to cart in database:', insertData); 
-
         toast({
           title: "Producto añadido.",
           description: `El producto ${product.name} se ha añadido al carrito.`,
@@ -164,7 +144,7 @@ export default function ProdList() {
 
   return (
     <Box p={4}>
-      <Stack spacing={4} as={Container} maxW={'3xl'} textAlign={'center'}>
+      <Stack spacing={4} as={Container} maxW={'8xl'} textAlign={'center'}>  {/* Ajusta maxW aquí */}
         <Heading
           fontWeight={600}
           fontSize={{ base: '2xl', sm: '4xl', md: '6xl' }}
@@ -178,7 +158,7 @@ export default function ProdList() {
         </Text>
       </Stack>
 
-      <Container maxW={'5xl'} mt={10}>
+      <Container maxW={'8xl'} mt={10}>  {/* Ajusta el contenedor */}
         <Input
           placeholder="Buscar productos por nombre..."
           value={searchTerm}
@@ -186,15 +166,15 @@ export default function ProdList() {
           mb={6}
         />
         <Stack spacing={6}>
-          <Flex flexWrap="wrap" gridGap={150} justify="center">
+          <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={4}>  {/* Reduce el spacing */}
             {filteredProducts.map((product) => (
               <Card
                 key={product.id}
-                product={{ ...product, icon: <Icon as={iconMap[product.name] || FcTabletAndroid} w={10} h={10} /> }}
+                product={product}
                 onAddToCart={handleAddToCart} 
               />
             ))}
-          </Flex>
+          </SimpleGrid>
           {filteredProducts.length > 0 && <Divider />}
         </Stack>
       </Container>

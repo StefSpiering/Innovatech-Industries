@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Table, Thead, Tbody, Tr, Th, Td, Box, Spinner, Text, useToast, TableContainer, TableCaption, Button, Checkbox, Flex } from '@chakra-ui/react';
+import { Box, Heading, Text, Table, Thead, Tbody, Tr, Th, Td, Spinner, useToast, TableContainer, TableCaption, Button, Checkbox, Link } from '@chakra-ui/react';
 import supabase from '../lib/supabaseClient'; // Asegúrate de que esta ruta es correcta
 
 const ReportsTable = () => {
@@ -14,7 +14,7 @@ const ReportsTable = () => {
       try {
         const { data, error } = await supabase
           .from('reports')
-          .select('id, name, description, date, excel_file_url');
+          .select('id, name, description, date, excel_file_url, is_completed');
 
         if (error) throw error;
 
@@ -63,10 +63,7 @@ const ReportsTable = () => {
 
   const handleSaveChanges = async () => {
     try {
-      // Filter out entries with undefined values
       const filteredReports = updatedReports.filter(report => report.id !== undefined);
-
-      // Update existing records
       const updatePromises = filteredReports.map(report =>
         supabase
           .from('reports')
@@ -75,7 +72,6 @@ const ReportsTable = () => {
       );
       const updateResults = await Promise.all(updatePromises);
 
-      // Handle any errors in update results
       for (const result of updateResults) {
         if (result.error) throw result.error;
       }
@@ -112,7 +108,8 @@ const ReportsTable = () => {
               <Th>Nombre</Th>
               <Th>Descripción</Th>
               <Th>Fecha</Th>
-              <Th>Acciones</Th>
+              <Th>Excel</Th>
+              <Th>Completado</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -122,6 +119,15 @@ const ReportsTable = () => {
                 <Td>{report.name}</Td>
                 <Td>{report.description}</Td>
                 <Td>{new Date(report.date).toLocaleDateString()}</Td>
+                <Td>
+                  {report.excel_file_url ? (
+                    <Link href={report.excel_file_url} isExternal color="blue.500" download>
+                      Ver Excel
+                    </Link>
+                  ) : (
+                    <Text color="red.500">No disponible</Text>
+                  )}
+                </Td>
                 <Td>
                   <Checkbox
                     isChecked={report.is_completed || false}
@@ -134,7 +140,7 @@ const ReportsTable = () => {
         </Table>
       </TableContainer>
       <Box mt={4}>
-        <Button colorScheme="green" onClick={handleSaveChanges}>
+        <Button colorScheme="blue" onClick={handleSaveChanges}>
           Guardar Cambios
         </Button>
       </Box>
