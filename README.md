@@ -1,3 +1,9 @@
+# Integrantes Grupo 5:
+- Miguel Avendaño Arce
+- Jusef Emilio Moya Juárez
+- Adrián Sánchez Monge
+- Stephanie Karin Spiering
+  
 # Innovatech Industries - Sistema de Gestión de Producción
 
 Este proyecto es un sistema web desarrollado con JavaScript y Node.js para gestionar la producción y operaciones de Innovatech Industries, una empresa ficticia dedicada a la fabricación de dispositivos electrónicos de consumo.
